@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Home, Shirt, UtensilsCrossed, PartyPopper, Users, Award, ArrowRight, ArrowLeft, RotateCcw, Settings, Volume2, VolumeX, Zap, ZapOff, Menu } from 'lucide-react';
+import kurta from "./assets/Visuals/kurta.png";
+import saree from "./assets/Visuals/saree.jpg";
+import IndianFoodQuiz from "./IndianFoodQuiz";
 
 const CultureExplorer = () => {
   const [currentModule, setCurrentModule] = useState('home');
@@ -8,7 +11,8 @@ const CultureExplorer = () => {
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [score, setScore] = useState(0);
   const [animation, setAnimation] = useState('');
-  
+  const [showFoodQuiz, setShowFoodQuiz] = useState(false);
+                                 
   // Settings for autism-friendly features
   const [settings, setSettings] = useState({
     animationsEnabled: true,
@@ -18,6 +22,35 @@ const CultureExplorer = () => {
   });
   const [showSettings, setShowSettings] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+
+  // If showing food quiz, render only that component
+  if (showFoodQuiz) {
+    return (
+      <div>
+        <button
+          onClick={() => setShowFoodQuiz(false)}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            left: '20px',
+            padding: '12px 24px',
+            backgroundColor: '#f97316',
+            color: 'white',
+            borderRadius: '9999px',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            border: 'none',
+            cursor: 'pointer',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+            zIndex: 1000
+          }}
+        >
+          ← Back to Culture Explorer
+        </button>
+        <IndianFoodQuiz />
+      </div>
+    );
+  }
 
   // Data structure for all modules
   const modules = {
@@ -57,43 +90,61 @@ const CultureExplorer = () => {
           title: "Saree - Women's Dress",
           content: "A saree is a long, colorful cloth that women wrap around themselves",
           animation: "spin",
-          visual: "🥻",
-          colors: ["#f87171", "#facc15", "#4ade80", "#60a5fa", "#c084fc"]
+          visual:  <div>
+      <img src={saree} alt="Saree" />
+    </div>
+          
         },
         {
           title: "Kurta - For Everyone",
           content: "A kurta is a comfortable, long shirt worn by both men and women",
           animation: "pulse",
-          visual: "👔"
+          visual:   <div>
+      <img src={kurta} alt="Kurta" />
+    </div>
         }
       ]
     },
-    food: {
-      title: "🍛 Indian Food",
-      icon: UtensilsCrossed,
-      bgColor: "#fef3c7",
-      borderColor: "#fde047",
-      slides: [
-        {
-          title: "Rice - Staple Food",
-          content: "White rice is eaten with almost every meal in many Indian homes",
-          animation: "bounce",
-          visual: "🍚"
-        },
-        {
-          title: "Dal - Lentil Soup",
-          content: "Dal is a warm, tasty soup made from lentils. It's healthy and yummy!",
-          animation: "steam",
-          visual: "🥘"
-        },
-        {
-          title: "Roti - Flatbread",
-          content: "Roti is a round, flat bread. You can tear it and scoop up food with it!",
-          animation: "flip",
-          visual: "🫓"
-        }
-      ]
+     food: {
+  title: "🍛 Indian Food",
+  icon: UtensilsCrossed,
+  bgColor: "#fef3c7",
+  borderColor: "#fde047",
+  slides: [
+    {
+      title: "Rice 🍚",
+      content: "Rice is a staple food eaten all over India, especially in South India, East India, and North-East India.",
+      animation: "bounce",
+      visual: "🍚"
     },
+    {
+      title: "Naan 🫓",
+      content: "Naan is a soft bread originally from North India, commonly eaten with curries like butter chicken.",
+      animation: "flip",
+      visual: "🫓"
+    },
+    {
+      title: "Chicken Curry 🍗",
+      content: "Chicken curry is popular across North India and Punjab. It is cooked with spices, onions, and tomatoes.",
+      animation: "pulse",
+      visual: "🍗"
+    },
+    {
+      title: "Mirchi (Chilli) 🌶️",
+      content: "Mirchi is widely used in South Indian and Andhra cuisine. It adds spice and flavor to food.",
+      animation: "bounce",
+      visual: "🌶️"
+    },
+    {
+      title: "Extra: Dosa 🥞",
+      content: "Dosa comes from South India. It is a thin crispy pancake made from rice and lentils.",
+      animation: "spin",
+      visual: "🥞"
+    }
+  ]
+}
+
+    ,
     festivals: {
       title: "🎉 Festivals",
       icon: PartyPopper,
@@ -188,102 +239,34 @@ const CultureExplorer = () => {
     {
       festival: "Pongal",
       emoji: "🌾",
-      matches: ["Harvest", "Rice", "Gratitude"],
+      matches: ["Harvest", "Rice", "Sun"],
       description: "Harvest Festival"
-    },
-    {
-      festival: "Bhogi",
-      emoji: "🔥",
-      matches: ["Bonfire", "Old things", "New beginning"],
-      description: "First day of Pongal"
-    },
-    {
-      festival: "Onam",
-      emoji: "🌺",
-      matches: ["Flowers", "Boat race", "Kerala"],
-      description: "Harvest Festival of Kerala"
-    },
-    {
-      festival: "Navratri",
-      emoji: "💃",
-      matches: ["Dance", "Nine nights", "Garba"],
-      description: "Nine Nights Festival"
-    },
-    {
-      festival: "Raksha Bandhan",
-      emoji: "🎀",
-      matches: ["Siblings", "Thread", "Protection"],
-      description: "Brother-Sister Festival"
-    },
-    {
-      festival: "Eid",
-      emoji: "🌙",
-      matches: ["Moon", "Prayers", "Sweets"],
-      description: "Festival after Ramadan"
     }
   ];
 
-  const [quizData, setQuizData] = useState([]);
-  const [matchingItems, setMatchingItems] = useState([]);
+  const matchingItems = [
+    { id: 1, text: "Lights" },
+    { id: 2, text: "Colors" },
+    { id: 3, text: "Harvest" },
+    { id: 4, text: "Diyas" },
+    { id: 5, text: "Powder" },
+    { id: 6, text: "Rice" }
+  ];
 
-  // Select random 2 questions when component mounts or quiz resets
-  useEffect(() => {
-    selectRandomQuestions();
-  }, []);
+  const quizData = allQuizData;
 
-  const selectRandomQuestions = () => {
-    const shuffled = [...allQuizData].sort(() => Math.random() - 0.5);
-    setQuizData(shuffled.slice(0, 2));
-  };
-
-  // Update matching items when quiz questions change
-  useEffect(() => {
-    if (quizData.length > 0) {
-      const allOptions = quizData.flatMap(q => q.matches);
-      const shuffledOptions = allOptions.sort(() => Math.random() - 0.5);
-      setMatchingItems(shuffledOptions.map((text, idx) => ({ id: idx, text, matched: false })));
-    }
-  }, [quizData]);
-
-  const handleModuleClick = (moduleName) => {
-    setCurrentModule(moduleName);
-    setCurrentSlide(0);
-    setShowMenu(false);
-    if (settings.animationsEnabled) {
-      setAnimation('slideIn');
-      setTimeout(() => setAnimation(''), 500);
-    }
-  };
-
-  const nextSlide = () => {
-    const totalSlides = modules[currentModule].slides.length;
-    if (currentSlide < totalSlides - 1) {
-      setCurrentSlide(currentSlide + 1);
-      setAnimation('slideIn');
-      setTimeout(() => setAnimation(''), 500);
-    }
-  };
-
-  const prevSlide = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
-      setAnimation('slideIn');
-      setTimeout(() => setAnimation(''), 500);
-    }
-  };
-
-  const handleQuizAnswer = (festivalName, answer) => {
-    setQuizAnswers({ ...quizAnswers, [festivalName]: answer });
+  const handleQuizAnswer = (festival, answer) => {
+    setQuizAnswers({ ...quizAnswers, [festival]: answer });
   };
 
   const submitQuiz = () => {
-    let correctAnswers = 0;
-    quizData.forEach(q => {
-      if (quizAnswers[q.festival] && q.matches.includes(quizAnswers[q.festival])) {
-        correctAnswers++;
+    let correctCount = 0;
+    quizData.forEach((item) => {
+      if (item.matches.includes(quizAnswers[item.festival])) {
+        correctCount++;
       }
     });
-    setScore(correctAnswers);
+    setScore(correctCount);
     setQuizSubmitted(true);
   };
 
@@ -291,235 +274,216 @@ const CultureExplorer = () => {
     setQuizAnswers({});
     setQuizSubmitted(false);
     setScore(0);
-    selectRandomQuestions();
   };
 
-  const AnimatedVisual = ({ visual, animationType, colors }) => {
-    const [currentColorIndex, setCurrentColorIndex] = useState(0);
+  const selectModule = (module) => {
+    setCurrentModule(module);
+    setCurrentSlide(0);
+    setShowMenu(false);
+  };
 
-    useEffect(() => {
-      if (animationType === 'colors') {
-        const interval = setInterval(() => {
-          setCurrentColorIndex((prev) => (prev + 1) % 5);
-        }, 500);
-        return () => clearInterval(interval);
-      }
-    }, [animationType]);
-
-    const getAnimationClass = () => {
-      switch(animationType) {
-        case 'hands':
-          return 'animate-pulse';
-        case 'bow':
-          return 'animate-bounce';
-        case 'wave':
-          return 'animate-pulse';
-        case 'spin':
-          return 'animate-spin';
-        case 'pulse':
-          return 'animate-pulse';
-        case 'bounce':
-          return 'animate-bounce';
-        case 'diya':
-          return 'animate-pulse';
-        case 'colors':
-          return 'animate-bounce';
-        case 'family':
-          return 'animate-pulse';
-        default:
-          return '';
-      }
-    };
-
-    if (animationType === 'diya') {
-      return (
-        <div style={{ position: 'relative' }}>
-          <div style={{ fontSize: '144px' }} className="animate-pulse">{visual}</div>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="animate-ping"
-                style={{
-                  position: 'absolute',
-                  width: '8px',
-                  height: '8px',
-                  backgroundColor: '#facc15',
-                  borderRadius: '50%',
-                  top: `${20 + Math.random() * 60}%`,
-                  left: `${20 + Math.random() * 60}%`,
-                  animationDelay: `${i * 0.2}s`
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      );
+  const nextSlide = () => {
+    if (currentSlide < modules[currentModule].slides.length - 1) {
+      setCurrentSlide(currentSlide + 1);
     }
+  };
 
-    if (animationType === 'colors') {
-      const colorVals = ['#f87171', '#facc15', '#4ade80', '#60a5fa', '#c084fc'];
-      return (
-        <div style={{ position: 'relative' }}>
-          <div style={{ fontSize: '144px' }} className="animate-bounce">{visual}</div>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {colorVals.map((color, i) => (
-              <div
-                key={i}
-                style={{
-                  position: 'absolute',
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  backgroundColor: color,
-                  opacity: 0.6,
-                  transition: 'all 0.5s',
-                  transform: `translate(${Math.cos(i * 72 * Math.PI / 180) * (currentColorIndex === i ? 100 : 80)}px, ${Math.sin(i * 72 * Math.PI / 180) * (currentColorIndex === i ? 100 : 80)}px) scale(${currentColorIndex === i ? 1.2 : 1})`
-                }}
-              />
-            ))}
-          </div>
-        </div>
-      );
+  const previousSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
     }
-
-    if (animationType === 'spin' && colors) {
-      return (
-        <div style={{ position: 'relative', width: '192px', height: '192px', margin: '0 auto' }}>
-          {colors.map((color, i) => (
-            <div
-              key={i}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                backgroundColor: color,
-                borderRadius: '50%',
-                opacity: 0.4,
-                animation: `spin ${3 + i}s linear infinite`,
-                animationDelay: `${i * 0.5}s`
-              }}
-            />
-          ))}
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '72px' }}>
-            {visual}
-          </div>
-        </div>
-      );
-    }
-
-    return <div style={{ fontSize: '144px' }} className={getAnimationClass()}>{visual}</div>;
   };
 
   const currentModuleData = modules[currentModule];
-  const currentSlideData = currentModuleData.slides[currentSlide];
+  const ModuleIcon = currentModuleData.icon;
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      width: '100%',
-      background: 'linear-gradient(to bottom right, #ffedd5, #fef3c7, #fce7f3)',
-      padding: '16px',
-      colorScheme: 'light',
-      boxSizing: 'border-box'
-    }}>
-      <div style={{ width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 style={{ 
-            fontSize: '40px', 
-            fontWeight: 'bold', 
-            color: '#ea580c',
-            marginBottom: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            flexWrap: 'wrap'
-          }}>
-            <Sparkles style={{ width: '40px', height: '40px' }} />
-            Discover India!
-            <Sparkles style={{ width: '40px', height: '40px' }} />
-          </h1>
-          <p style={{ fontSize: '18px', color: '#374151' }}>Learn about Indian culture in a fun way!</p>
-        </div>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', padding: '24px', position: 'relative' }}>
+      {/* Settings Toggle */}
+      <button
+        onClick={() => setShowSettings(!showSettings)}
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          padding: '12px',
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          border: '2px solid #e5e7eb',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000
+        }}
+      >
+        <Settings style={{ width: '24px', height: '24px', color: '#374151' }} />
+      </button>
 
-        {/* Module Selection */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-          gap: '12px',
-          marginBottom: '32px'
+      {/* Mobile Menu Toggle */}
+      <button
+        onClick={() => setShowMenu(!showMenu)}
+        style={{
+          position: 'fixed',
+          top: '20px',
+          left: '20px',
+          padding: '12px',
+          backgroundColor: 'white',
+          borderRadius: '50%',
+          border: '2px solid #e5e7eb',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          zIndex: 1000,
+          display: window.innerWidth < 768 ? 'block' : 'none'
+        }}
+      >
+        <Menu style={{ width: '24px', height: '24px', color: '#374151' }} />
+      </button>
+
+      {/* Settings Panel */}
+      {showSettings && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '24px',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+          zIndex: 999,
+          minWidth: '250px'
         }}>
-          {Object.entries(modules).map(([key, module]) => {
-            const IconComponent = module.icon;
-            return (
+          <h3 style={{ fontSize: '20px', fontWeight: 'bold', marginBottom: '16px', color: '#1f2937' }}>Settings</h3>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+              <span style={{ color: '#374151' }}>Animations</span>
               <button
-                key={key}
-                onClick={() => handleModuleClick(key)}
+                onClick={() => setSettings({ ...settings, animationsEnabled: !settings.animationsEnabled })}
                 style={{
-                  backgroundColor: module.bgColor,
-                  border: `4px solid ${module.borderColor}`,
-                  borderRadius: '24px',
-                  padding: '24px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s',
-                  outline: currentModule === key ? '4px solid #fb923c' : 'none',
-                  transform: currentModule === key ? 'scale(1.05)' : 'scale(1)',
-                  boxShadow: currentModule === key ? '0 20px 25px -5px rgba(0, 0, 0, 0.1)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (currentModule !== key) {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                    e.currentTarget.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (currentModule !== key) {
-                    e.currentTarget.style.transform = 'scale(1)';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: settings.animationsEnabled ? '#22c55e' : '#e5e7eb',
+                  color: settings.animationsEnabled ? 'white' : '#6b7280',
+                  cursor: 'pointer'
                 }}
               >
-                <IconComponent style={{ width: '48px', height: '48px', margin: '0 auto 12px', display: 'block', color: '#374151' }} />
-                <p style={{ fontWeight: 'bold', fontSize: '14px', color: '#1f2937', textAlign: 'center' }}>
-                  {module.title.split(':')[1] || module.title}
-                </p>
+                {settings.animationsEnabled ? <Zap style={{ width: '20px', height: '20px' }} /> : <ZapOff style={{ width: '20px', height: '20px' }} />}
               </button>
-            );
-          })}
-        </div>
+            </label>
 
-        {/* Content Display */}
-        <div style={{
+            <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+              <span style={{ color: '#374151' }}>Sound</span>
+              <button
+                onClick={() => setSettings({ ...settings, soundEnabled: !settings.soundEnabled })}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '8px',
+                  border: 'none',
+                  backgroundColor: settings.soundEnabled ? '#22c55e' : '#e5e7eb',
+                  color: settings.soundEnabled ? 'white' : '#6b7280',
+                  cursor: 'pointer'
+                }}
+              >
+                {settings.soundEnabled ? <Volume2 style={{ width: '20px', height: '20px' }} /> : <VolumeX style={{ width: '20px', height: '20px' }} />}
+              </button>
+            </label>
+          </div>
+        </div>
+      )}
+
+      {/* Module Navigation */}
+      <div style={{
+        display: showMenu || window.innerWidth >= 768 ? 'grid' : 'none',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+        gap: '16px',
+        maxWidth: '1200px',
+        margin: '0 auto 32px',
+        padding: window.innerWidth < 768 ? '60px 0 0 0' : '0'
+      }}>
+        {Object.entries(modules).map(([key, module]) => {
+          const Icon = module.icon;
+          return (
+            <button
+              key={key}
+              onClick={() => selectModule(key)}
+              style={{
+                padding: '20px',
+                backgroundColor: currentModule === key ? module.bgColor : 'white',
+                border: `4px solid ${module.borderColor}`,
+                borderRadius: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                transform: currentModule === key ? 'scale(1.05)' : 'scale(1)',
+                boxShadow: currentModule === key ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)' : 'none'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+                <Icon style={{ width: '32px', height: '32px', color: '#374151' }} />
+                <span style={{ fontWeight: 'bold', fontSize: '18px', color: '#1f2937' }}>
+                  {module.title}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Main Content */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+        {/* Slide Display */}
+        <div style={{ 
           backgroundColor: currentModuleData.bgColor,
           border: `4px solid ${currentModuleData.borderColor}`,
           borderRadius: '24px',
-          padding: '32px',
-          marginBottom: '32px',
-          minHeight: '384px',
-          transition: 'all 0.5s'
+          padding: '40px',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
         }}>
-          <h2 style={{ fontSize: '36px', fontWeight: 'bold', color: '#1f2937', marginBottom: '24px', textAlign: 'center' }}>
-            {currentSlideData.title}
-          </h2>
-          
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
-            <AnimatedVisual 
-              visual={currentSlideData.visual} 
-              animationType={currentSlideData.animation}
-              colors={currentSlideData.colors}
-            />
-            
-            <p style={{ fontSize: '24px', color: '#374151', textAlign: 'center', maxWidth: '672px', lineHeight: '1.75' }}>
-              {currentSlideData.content}
+          <div style={{ 
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '24px'
+          }}>
+            <h1 style={{ 
+              fontSize: '48px', 
+              fontWeight: 'bold',
+              color: '#1f2937',
+              margin: 0,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <ModuleIcon style={{ width: '56px', height: '56px' }} />
+              {currentModuleData.slides[currentSlide].title}
+            </h1>
+
+            <div style={{ fontSize: '128px', margin: '24px 0' }}>
+              {typeof currentModuleData.slides[currentSlide].visual === 'string' 
+                ? currentModuleData.slides[currentSlide].visual 
+                : currentModuleData.slides[currentSlide].visual}
+            </div>
+
+            <p style={{ 
+              fontSize: '28px',
+              color: '#374151',
+              maxWidth: '800px',
+              lineHeight: '1.6'
+            }}>
+              {currentModuleData.slides[currentSlide].content}
             </p>
           </div>
 
-          {/* Navigation */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '48px' }}>
+          {/* Navigation Controls */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '40px',
+            gap: '16px'
+          }}>
             <button
-              onClick={prevSlide}
+              onClick={previousSlide}
               disabled={currentSlide === 0}
               style={{
                 display: 'flex',
@@ -567,6 +531,57 @@ const CultureExplorer = () => {
             </button>
           </div>
         </div>
+
+        {/* Food Quiz Button - Only show when on food module */}
+        {currentModule === 'food' && (
+          <div style={{ 
+            backgroundColor: 'white', 
+            border: '4px solid #fde047', 
+            borderRadius: '24px', 
+            padding: '32px',
+            textAlign: 'center'
+          }}>
+            <h2 style={{ 
+              fontSize: '32px', 
+              fontWeight: 'bold', 
+              color: '#ca8a04',
+              marginBottom: '16px'
+            }}>
+              🍽️ Test Your Knowledge!
+            </h2>
+            <p style={{ 
+              fontSize: '20px', 
+              color: '#374151', 
+              marginBottom: '24px' 
+            }}>
+              Ready to see how much you've learned about Indian food? Take the quiz!
+            </p>
+            <button
+              onClick={() => setShowFoodQuiz(true)}
+              style={{
+                padding: '16px 32px',
+                backgroundColor: '#f59e0b',
+                color: 'white',
+                borderRadius: '9999px',
+                fontWeight: 'bold',
+                fontSize: '20px',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}
+              onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+            >
+              <UtensilsCrossed style={{ width: '24px', height: '24px' }} />
+              Start Food Quiz
+              <ArrowRight style={{ width: '24px', height: '24px' }} />
+            </button>
+          </div>
+        )}
 
         {/* Quiz Section */}
         <div style={{ backgroundColor: 'white', border: '4px solid #d8b4fe', borderRadius: '24px', padding: '32px' }}>
