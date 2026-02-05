@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Home, Shirt, UtensilsCrossed, PartyPopper, Users, Award, ArrowRight, ArrowLeft, RotateCcw, Settings, Volume2, VolumeX, Zap, ZapOff, Menu } from 'lucide-react';
-
+import kurta from "./assets/Visuals/kurta.png";
+import saree from "./assets/Visuals/saree.jpg";
 const CultureExplorer = () => {
   const [currentModule, setCurrentModule] = useState('home');
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -57,14 +58,17 @@ const CultureExplorer = () => {
           title: "Saree - Women's Dress",
           content: "A saree is a long, colorful cloth that women wrap around themselves",
           animation: "spin",
-          visual: "🥻",
-          colors: ["#f87171", "#facc15", "#4ade80", "#60a5fa", "#c084fc"]
+          visual: <div>
+      <img src={saree} alt="Saree" />
+    </div>
         },
         {
           title: "Kurta - For Everyone",
           content: "A kurta is a comfortable, long shirt worn by both men and women",
           animation: "pulse",
-          visual: "👔"
+          visual: <div>
+      <img src={kurta} alt="Kurta" />
+    </div>
         }
       ]
     },
